@@ -17,16 +17,6 @@
 
 package com.googlecode.jhocr.converter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.googlecode.jhocr.element.HocrDocument;
 import com.googlecode.jhocr.element.HocrPage;
 import com.googlecode.jhocr.parser.HocrParser;
@@ -38,6 +28,15 @@ import com.itextpdf.text.pdf.ICC_Profile;
 import com.itextpdf.text.pdf.PdfAConformanceLevel;
 import com.itextpdf.text.pdf.PdfAWriter;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * TODO add documentation
@@ -232,7 +231,8 @@ public class HocrToPdf {
 				 * TODO add documentation
 				 */
 				for (HocrPage hocrPage : hocrDocument.getPages()) {
-					HocrPageProcessor pageProcessor = new HocrPageProcessor(hocrPage, item.getImageInputStream(), isUseImageDpi());
+
+                    HocrPageProcessor pageProcessor = new HocrPageProcessor(hocrPage, item.getImageInputStream(), isUseImageDpi());
 
 					if (pageProcessor.isInitialized()) {
 						pageProcessor.process(document, writer);

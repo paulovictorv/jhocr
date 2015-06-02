@@ -1,0 +1,7 @@
+# Created by .gitignore support plugin (hsz.mobi)
+.classpath
+eclipse-code-formatter-profile.xml
+nbactions.xml
+.project
+.idea
+com.googlecode.jhocr.iml

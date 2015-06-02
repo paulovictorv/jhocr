@@ -17,28 +17,21 @@
 
 package com.googlecode.jhocr.parser;
 
+import com.googlecode.jhocr.attribute.BBox;
+import com.googlecode.jhocr.attribute.ParagraphDirection;
+import com.googlecode.jhocr.element.*;
+import com.googlecode.jhocr.util.LoggUtilException;
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.StartTag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.StartTag;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.googlecode.jhocr.attribute.BBox;
-import com.googlecode.jhocr.attribute.ParagraphDirection;
-import com.googlecode.jhocr.element.HocrCarea;
-import com.googlecode.jhocr.element.HocrDocument;
-import com.googlecode.jhocr.element.HocrLine;
-import com.googlecode.jhocr.element.HocrPage;
-import com.googlecode.jhocr.element.HocrParagraph;
-import com.googlecode.jhocr.element.HocrWord;
-import com.googlecode.jhocr.util.LoggUtilException;
 
 /**
  * TODO add documentation
@@ -152,8 +145,8 @@ public class HocrParser {
 		Matcher imageMatcher = PATTERN_IMAGE.matcher(element.getAttributeValue(ATTRIBUTE_TITLE));
 
 		if (!imageMatcher.find()) {
-
-		}
+            //TODO document if imageMatcher does not find a image pattern
+        }
 
 		String id = element.getAttributeValue(ATTRIBUTE_ID);
 		String image = imageMatcher.group(1);

@@ -17,10 +17,10 @@
 
 package com.googlecode.jhocr.element;
 
+import com.googlecode.jhocr.attribute.BBox;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.googlecode.jhocr.attribute.BBox;
 
 /**
  * Class used to store information "ocr_page" element and their children.
@@ -32,7 +32,8 @@ public class HocrPage extends HocrElement {
 	public static final String	TAGNAME		= "div";
 	public static final String	CLASSNAME	= "ocr_page";
 
-	private HocrDocument		document;
+    private Integer pageNumber;
+    private HocrDocument		document;
 	private String				image;
 	private List<HocrCarea>		careas		= new ArrayList<HocrCarea>();
 
@@ -46,7 +47,8 @@ public class HocrPage extends HocrElement {
 	public HocrPage(String id, BBox bbox, String image) {
 		super(id, bbox);
 		this.image = image;
-	}
+        this.pageNumber = Integer.parseInt(id.split("_")[1]);
+    }
 
 	/**
 	 * @return The name of image.
@@ -165,4 +167,8 @@ public class HocrPage extends HocrElement {
 	public String toString() {
 		return "HocrPage{" + super.toString() + ", image=" + image + ", careas=" + careas.size() + "}";
 	}
+
+    public Integer getPageNumber() {
+        return pageNumber;
+    }
 }
