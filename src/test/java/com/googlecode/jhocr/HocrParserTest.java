@@ -27,4 +27,19 @@ public class HocrParserTest {
                 .ifPresent(page -> assertEquals((int) page.getPageNumber(), 1));
     }
 
+    @Test
+    public void shouldExtractPageNumber2() {
+        InputStream hocr = this.getClass().getClassLoader()
+                .getResourceAsStream("test-data/multipage.html");
+        HocrDocument parse = new HocrParser(hocr).parse();
+
+        assertEquals(2, parse.getPages().size());
+
+        parse.getPages()
+                .stream()
+                .filter(page -> page.getPageNumber() == 2)
+                .findFirst()
+                .ifPresent(page -> assertEquals((int) page.getPageNumber(), 2));
+    }
+
 }
