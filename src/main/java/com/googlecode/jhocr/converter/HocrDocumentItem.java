@@ -17,7 +17,18 @@
 
 package com.googlecode.jhocr.converter;
 
+import com.googlecode.jhocr.converter.exceptions.PageReadException;
+import com.googlecode.jhocr.util.LoggUtilException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 
 /**
  * Contains the<br>
@@ -27,8 +38,12 @@ import java.io.InputStream;
  */
 public class HocrDocumentItem {
 
-	private InputStream	hocrInputStream;
-	private InputStream	imageInputStream;
+    private final static Logger logger = LoggerFactory.getLogger(new LoggUtilException().toString());
+    private ImageReader imageReader;
+
+    private InputStream hocrInputStream;
+    private ImageInputStream imageInputStream;
+
 
 	/**
 	 * Returns an {@link com.googlecode.jhocr.converter.HocrDocumentItem} object that can be used for the hocr to pdf conversion from example {@link com.googlecode.jhocr.converter.HocrToPdf}.
@@ -39,9 +54,30 @@ public class HocrDocumentItem {
 	 *            is the input stream of the image.
 	 */
 	public HocrDocumentItem(InputStream hocrInputStream, InputStream imageInputStream) {
-		this.hocrInputStream = hocrInputStream;
-		this.imageInputStream = imageInputStream;
-	}
+        try {
+            this.hocrInputStream = hocrInputStream;
+            this.imageInputStream = ImageIO.createImageInputStream(imageInputStream);
+
+            if (this.imageInputStream == null) {
+                throw new IOException();
+            }
+
+            Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(this.imageInputStream);
+
+            if (imageReaders != null && !imageReaders.hasNext()) {
+                //TODO see if we can extract the intended format
+                throw new IOException("Format not supported.");
+            }
+
+            imageReader = imageReaders.next();
+            imageReader.setInput(this.imageInputStream);
+            logger.info("Using image reader {}", imageReader.getClass().getSimpleName());
+
+
+        } catch (IOException e) {
+            logger.error("Error while creating image input stream", e);
+        }
+    }
 
 	/**
 	 * @return the {@link #hocrInputStream} of the hocr file.
@@ -50,30 +86,12 @@ public class HocrDocumentItem {
 		return hocrInputStream;
 	}
 
-	/**
-	 * Sets the hocr file {@link #hocrInputStream}.
-	 * 
-	 * @param hocrInputStream
-	 *            will be set.
-	 */
-	public void setHocrInputStream(InputStream hocrInputStream) {
-		this.hocrInputStream = hocrInputStream;
-	}
-
-	/**
-	 * @return the {@link #imageInputStream} of the image.
-	 */
-	public InputStream getImageInputStream() {
-		return imageInputStream;
-	}
-
-	/**
-	 * Sets the image file {@link #imageInputStream} object.
-	 * 
-	 * @param imageInputStream
-	 *            will be set.
-	 */
-	public void setImageInputStream(InputStream imageInputStream) {
-		this.imageInputStream = imageInputStream;
-	}
+    public BufferedImage getImageForPage(Integer pageNumber) {
+        try {
+            return imageReader.read(pageNumber - 1);
+        } catch (IOException | IndexOutOfBoundsException e) {
+            logger.error("Error while reading the image page: ", e);
+            throw new PageReadException(e);
+        }
+    }
 }

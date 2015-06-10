@@ -40,7 +40,7 @@ import java.util.List;
 
 /**
  * TODO add documentation
- * TODO improve the way the information is beeing passed to the document e.g.: com-googlecode-jhocr-info
+ * TODO improve the way the information is being passed to the document e.g.: com-googlecode-jhocr-info
  * TODO add documentation, for example why exactly 72.0f
  * 
  */
@@ -55,7 +55,7 @@ public class HocrToPdf {
 	private final static Logger				logger					= LoggerFactory.getLogger(new LoggUtilException().toString());
 
 	private static final String				KEY_JHOCR_INFO			= "com-googlecode-jhocr-info";
-	private static final String				KEY_JHOCR_INFO_VALUE	= "This document were generated with jhocr, for more information visit: https://code.google.com/p/jhocr";
+    private static final String KEY_JHOCR_INFO_VALUE = "This document was generated with jhocr, for more information visit: https://code.google.com/p/jhocr";
 
 	/**
 	 * @param outputStream
@@ -134,44 +134,13 @@ public class HocrToPdf {
 			document.open();
 			document.addHeader(KEY_JHOCR_INFO, KEY_JHOCR_INFO_VALUE);
 			document.setMargins(0, 0, 0, 0);
+            processDocument(document, writer);
 
-			/**
-			 * TODO add documentation
-			 */
-			for (HocrDocumentItem item : getItems()) {
 
-				HocrParser parser = new HocrParser(item.getHocrInputStream());
-
-				HocrDocument hocrDocument = parser.parse();
-
-				/**
-				 * TODO add documentation
-				 * TODO add multipage image support
-				 */
-				if (hocrDocument.getPages().size() > 1) {
-					throw new UnsupportedOperationException("Multipage tif are not yet implemented, please report: http://code.google.com/p/jhocr/issues/list");
-				}
-
-				/**
-				 * TODO add documentation
-				 */
-				for (HocrPage hocrPage : hocrDocument.getPages()) {
-					HocrPageProcessor pageProcessor = new HocrPageProcessor(hocrPage, item.getImageInputStream(), isUseImageDpi());
-
-					if (pageProcessor.isInitialized()) {
-						pageProcessor.process(document, writer);
-					}
-				}
-			}
-
-			if (!outlines.isEmpty()) {
-				writer.setOutlines(outlines);
-			}
-
-			/**
-			 * Closing the document body stream.
-			 */
-			document.close();
+            /**
+             * Closing the document body stream.
+             */
+            document.close();
 			getOutputStream().close();
 			result = true;
 
@@ -192,8 +161,37 @@ public class HocrToPdf {
 		return result;
 	}
 
-	/**
-	 * 
+    private void processDocument(Document document, PdfWriter writer) {
+        /**
+         * TODO add documentation
+         */
+        for (HocrDocumentItem item : getItems()) {
+
+            HocrParser parser = new HocrParser(item.getHocrInputStream());
+
+            HocrDocument hocrDocument = parser.parse();
+
+            /**
+             * TODO add documentation
+             */
+            for (HocrPage hocrPage : hocrDocument.getPages()) {
+                HocrPageProcessor pageProcessor = new HocrPageProcessor(hocrPage,
+                        item.getImageForPage(hocrPage.getPageNumber()),
+                        isUseImageDpi());
+
+                if (pageProcessor.isInitialized()) {
+                    pageProcessor.process(document, writer);
+                }
+            }
+        }
+
+        if (!outlines.isEmpty()) {
+            writer.setOutlines(outlines);
+        }
+    }
+
+    /**
+     *
 	 * @param pdfXConformance
 	 *            determines into which format the PDF-X will be converted.
 	 * @return true if the conversion was successful.
@@ -213,36 +211,7 @@ public class HocrToPdf {
 			/**
 			 * TODO add documentation
 			 */
-			for (HocrDocumentItem item : getItems()) {
-
-				HocrParser parser = new HocrParser(item.getHocrInputStream());
-
-				HocrDocument hocrDocument = parser.parse();
-
-				/**
-				 * TODO add documentation
-				 * TODO add multipage image support
-				 */
-				if (hocrDocument.getPages().size() > 1) {
-					throw new UnsupportedOperationException("Multipage tif are not yet implemented, please report: http://code.google.com/p/jhocr/issues/list");
-				}
-
-				/**
-				 * TODO add documentation
-				 */
-				for (HocrPage hocrPage : hocrDocument.getPages()) {
-
-                    HocrPageProcessor pageProcessor = new HocrPageProcessor(hocrPage, item.getImageInputStream(), isUseImageDpi());
-
-					if (pageProcessor.isInitialized()) {
-						pageProcessor.process(document, writer);
-					}
-				}
-			}
-
-			if (!outlines.isEmpty()) {
-				writer.setOutlines(outlines);
-			}
+            processDocument(document, writer);
 
 			/**
 			 * Closing the document body stream.
@@ -278,12 +247,6 @@ public class HocrToPdf {
 		boolean result = false;
 		Document document = new Document();
 
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
-		if (classLoader == null) {
-			classLoader = Class.class.getClassLoader();
-		}
-
 		try {
 			PdfAWriter writer = PdfAWriter.getInstance(document, getOutputStream(), pdfConformanceLevel);
 			writer.createXmpMetadata();
@@ -295,35 +258,7 @@ public class HocrToPdf {
 			/**
 			 * TODO add documentation
 			 */
-			for (HocrDocumentItem item : getItems()) {
-
-				HocrParser parser = new HocrParser(item.getHocrInputStream());
-
-				HocrDocument hocrDocument = parser.parse();
-
-				/**
-				 * TODO add documentation
-				 * TODO add multipage image support
-				 */
-				if (hocrDocument.getPages().size() > 1) {
-					throw new UnsupportedOperationException("Multipage tif are not yet implemented, please report: http://code.google.com/p/jhocr/issues/list");
-				}
-
-				/**
-				 * TODO add documentation
-				 */
-				for (HocrPage hocrPage : hocrDocument.getPages()) {
-					HocrPageProcessor pageProcessor = new HocrPageProcessor(hocrPage, item.getImageInputStream(), isUseImageDpi());
-
-					if (pageProcessor.isInitialized()) {
-						pageProcessor.process(document, writer);
-					}
-				}
-			}
-
-			if (!outlines.isEmpty()) {
-				writer.setOutlines(outlines);
-			}
+            processDocument(document, writer);
 
 			InputStream is = this.getClass().getResourceAsStream("/sRGB.profile");
 
