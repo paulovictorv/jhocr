@@ -141,7 +141,7 @@ public class HocrToPdf {
              * Closing the document body stream.
              */
             document.close();
-            getOutputStream().close();
+			getOutputStream().close();
 			result = true;
 
 		} catch (UnsupportedOperationException e) {
@@ -192,7 +192,7 @@ public class HocrToPdf {
 
     /**
      *
-     * @param pdfXConformance
+	 * @param pdfXConformance
 	 *            determines into which format the PDF-X will be converted.
 	 * @return true if the conversion was successful.
 	 */
