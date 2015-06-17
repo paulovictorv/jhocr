@@ -21,7 +21,7 @@ import com.googlecode.jhocr.element.HocrDocument;
 import com.googlecode.jhocr.element.HocrPage;
 import com.googlecode.jhocr.parser.HocrParser;
 import com.googlecode.jhocr.util.LoggUtilException;
-import com.googlecode.jhocr.util.enums.PDFF;
+import com.googlecode.jhocr.util.enums.PDFFormats;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.ICC_Profile;
@@ -50,7 +50,7 @@ public class HocrToPdf {
 	private final List<HocrDocumentItem>	items					= new ArrayList<HocrDocumentItem>();
 	private List<HashMap<String, Object>>	outlines				= new ArrayList<HashMap<String, Object>>();
 	private boolean							useImageDpi				= true;
-	private PDFF							pdfFormat				= null;
+    private PDFFormats pdfFormat = null;
 
 	private final static Logger				logger					= LoggerFactory.getLogger(new LoggUtilException().toString());
 
@@ -92,18 +92,18 @@ public class HocrToPdf {
 
 		if (!getItems().isEmpty() && getItems() != null) {
 
-			PDFF pdff = getPdfFormat();
+            PDFFormats PDFFormats = getPdfFormat();
 
-			if (pdff != null) {
+            if (PDFFormats != null) {
 
-				if (pdff.getValue() instanceof Integer) {
+                if (PDFFormats.getValue() instanceof Integer) {
 
-					result = convertToPDFX((Integer) pdff.getValue());
+                    result = convertToPDFX((Integer) PDFFormats.getValue());
 
-				} else if (pdff instanceof PDFF) {
+                } else if (PDFFormats instanceof PDFFormats) {
 
-					PdfAConformanceLevel pdfCL = (PdfAConformanceLevel) pdff.getValue();
-					result = convertToPDFA(pdfCL);
+                    PdfAConformanceLevel pdfCL = (PdfAConformanceLevel) PDFFormats.getValue();
+                    result = convertToPDFA(pdfCL);
 
 				}
 
@@ -345,8 +345,8 @@ public class HocrToPdf {
 	 * 
 	 * @return the {@link #pdfFormat} that was set for the current document.
 	 */
-	public PDFF getPdfFormat() {
-		return pdfFormat;
+    public PDFFormats getPdfFormat() {
+        return pdfFormat;
 	}
 
 	/**
@@ -355,8 +355,8 @@ public class HocrToPdf {
 	 * @param pdfFormat
 	 *            sets the PDF format for the current document to be converted.
 	 */
-	public void setPdfFormat(PDFF pdfFormat) {
-		this.pdfFormat = pdfFormat;
+    public void setPdfFormat(PDFFormats pdfFormat) {
+        this.pdfFormat = pdfFormat;
 	}
 
 }

@@ -24,7 +24,7 @@ import com.itextpdf.text.pdf.PdfWriter;
  * Supported PDF formats JHOCR.
  * 
  */
-public enum PDFF {
+public enum PDFFormats {
 
 	PDF_A_3U(PdfAConformanceLevel.PDF_A_3U) {
 		@Override
@@ -71,12 +71,12 @@ public enum PDFF {
 
 	private Object	obj;
 
-	private PDFF(PdfAConformanceLevel cl) {
-		this.obj = cl;
+    private PDFFormats(PdfAConformanceLevel cl) {
+        this.obj = cl;
 	}
 
-	private PDFF(int i) {
-		this.obj = i;
+    private PDFFormats(int i) {
+        this.obj = i;
 	}
 
 	public Object getValue() {
