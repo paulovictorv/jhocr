@@ -26,7 +26,7 @@ public class HocrToPdfTest {
 
         JHOCRUtil jhocrUtil = new JHOCRUtil();
 
-        jhocrUtil.testGeneratedPDF("IMPORTADORA", byteArrayOutputStream.toByteArray());
+        jhocrUtil.testGeneratedPDF("Multipage", byteArrayOutputStream.toByteArray());
     }
 
 }
