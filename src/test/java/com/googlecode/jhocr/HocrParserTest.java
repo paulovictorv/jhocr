@@ -33,7 +33,7 @@ public class HocrParserTest {
                 .getResourceAsStream("test-data/multipage.html");
         HocrDocument parse = new HocrParser(hocr).parse();
 
-        assertEquals(2, parse.getPages().size());
+        assertEquals(10, parse.getPages().size());
 
         parse.getPages()
                 .stream()
