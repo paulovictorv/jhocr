@@ -4,4 +4,4 @@ eclipse-code-formatter-profile.xml
 nbactions.xml
 .project
 .idea
-com.googlecode.jhocr.iml
+*.iml
