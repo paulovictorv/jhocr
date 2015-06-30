@@ -18,6 +18,8 @@
 package com.googlecode.jhocr.converter;
 
 import com.googlecode.jhocr.converter.exceptions.PageReadException;
+import com.googlecode.jhocr.element.HocrDocument;
+import com.googlecode.jhocr.parser.HocrParser;
 import com.googlecode.jhocr.util.LoggUtilException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,12 +43,12 @@ public class HocrDocumentItem {
     private final static Logger logger = LoggerFactory.getLogger(new LoggUtilException().toString());
     private ImageReader imageReader;
 
-    private InputStream hocrInputStream;
     private ImageInputStream imageInputStream;
+    private HocrDocument hocrDocument;
 
 
-	/**
-	 * Returns an {@link com.googlecode.jhocr.converter.HocrDocumentItem} object that can be used for the hocr to pdf conversion from example {@link com.googlecode.jhocr.converter.HocrToPdf}.
+    /**
+     * Returns an {@link com.googlecode.jhocr.converter.HocrDocumentItem} object that can be used for the hocr to pdf conversion from example {@link com.googlecode.jhocr.converter.HocrToPdf}.
 	 * 
 	 * @param hocrInputStream
 	 *            is the input stream of the hocr file.
@@ -54,8 +56,24 @@ public class HocrDocumentItem {
 	 *            is the input stream of the image.
 	 */
 	public HocrDocumentItem(InputStream hocrInputStream, InputStream imageInputStream) {
+        HocrParser hocrParser = new HocrParser(hocrInputStream);
+        HocrDocument parse = hocrParser.parse();
+        init(parse, imageInputStream);
+    }
+
+    public HocrDocumentItem(String hocrSource, InputStream imageInputStream) {
+        HocrParser hocrParser = new HocrParser(hocrSource);
+        HocrDocument parse = hocrParser.parse();
+        init(parse, imageInputStream);
+    }
+
+    public HocrDocumentItem(HocrDocument hocrDocument, InputStream imgInputStream) {
+        init(hocrDocument, imgInputStream);
+    }
+
+    private void init(HocrDocument document, InputStream imageInputStream) {
         try {
-            this.hocrInputStream = hocrInputStream;
+            this.hocrDocument = document;
             this.imageInputStream = ImageIO.createImageInputStream(imageInputStream);
 
             if (this.imageInputStream == null) {
@@ -79,13 +97,6 @@ public class HocrDocumentItem {
         }
     }
 
-	/**
-	 * @return the {@link #hocrInputStream} of the hocr file.
-	 */
-	public InputStream getHocrInputStream() {
-		return hocrInputStream;
-	}
-
     public BufferedImage getImageForPage(Integer pageNumber) {
         try {
             return imageReader.read(pageNumber - 1);
@@ -93,5 +104,9 @@ public class HocrDocumentItem {
             logger.error("Error while reading the image page: ", e);
             throw new PageReadException(e);
         }
+    }
+
+    public HocrDocument getHocrDocument() {
+        return hocrDocument;
     }
 }

@@ -19,7 +19,6 @@ package com.googlecode.jhocr.converter;
 
 import com.googlecode.jhocr.element.HocrDocument;
 import com.googlecode.jhocr.element.HocrPage;
-import com.googlecode.jhocr.parser.HocrParser;
 import com.googlecode.jhocr.util.LoggUtilException;
 import com.googlecode.jhocr.util.enums.PDFFormats;
 import com.itextpdf.text.Document;
@@ -167,9 +166,7 @@ public class HocrToPdf {
          */
         for (HocrDocumentItem item : getItems()) {
 
-            HocrParser parser = new HocrParser(item.getHocrInputStream());
-
-            HocrDocument hocrDocument = parser.parse();
+            HocrDocument hocrDocument = item.getHocrDocument();
 
             /**
              * TODO add documentation
@@ -301,6 +298,10 @@ public class HocrToPdf {
 	public void addHocrDocument(InputStream hocrInputStream, InputStream imgInputStream) {
 		this.items.add(new HocrDocumentItem(hocrInputStream, imgInputStream));
 	}
+
+    public void addHocrDocument(HocrDocument hocrDocument, InputStream imgInputStream) {
+        this.items.add(new HocrDocumentItem(hocrDocument, imgInputStream));
+    }
 
 	/**
 	 * @return the {@link #outlines} collection.
