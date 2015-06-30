@@ -27,8 +27,10 @@ import net.htmlparser.jericho.StartTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,8 +69,12 @@ public class HocrParser {
 		this.inputStream = inputStream;
 	}
 
-	/**
-	 * TODO add documentation
+    public HocrParser(String hocrSource) {
+        this.inputStream = new ByteArrayInputStream(hocrSource.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * TODO add documentation
 	 * 
 	 * @return
 	 * @throws Exception
@@ -270,7 +276,6 @@ public class HocrParser {
 		boolean strong = strongTags.size() > 0;
 
 		String text = element.getContent().getTextExtractor().toString();
-
 		return new HocrWord(id, bbox, text, strong);
 	}
 

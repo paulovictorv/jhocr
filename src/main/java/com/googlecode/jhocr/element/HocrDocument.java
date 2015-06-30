@@ -46,9 +46,6 @@ import java.util.List;
  */
 public class HocrDocument {
 
-	public static final String	TESSERACT_VERSION_3_02	= "tesseract 3.02";
-	public static final String	TESSERACT_VERSION_3_01	= "tesseract";
-
 	private String				contentType;
 	private String				ocrSystem;
 
@@ -61,14 +58,7 @@ public class HocrDocument {
     }
 
     /**
-     * @return The content type of document
-	 */
-	public String getContentType() {
-		return contentType;
-	}
-
-	/**
-	 * Set the content type of document
+     * Set the content type of document
 	 * @param The content type of document
 	 */
 	public void setContentType(String contentType) {
@@ -99,15 +89,6 @@ public class HocrDocument {
 	}
 
 	/**
-	 * Set the children <code>HocrPage</code> of this.
-	 * 
-	 * @param pages The children <code>HocrPage</code> of this.
-	 */
-	public void setPages(List<HocrPage> pages) {
-		this.pages = pages;
-	}
-
-	/**
 	 * Add a new page
 	 * 
 	 * @param page The new page
@@ -132,23 +113,5 @@ public class HocrDocument {
 	@Override
 	public String toString() {
 		return "HocrDocument{" + "contentType=" + contentType + ", ocrSystem=" + ocrSystem + ", pages=" + pages.size() + "}";
-	}
-
-	/**
-	 * Validates if ocr system is version 3.01 of Tesseract
-	 * 
-	 * @return Result of validation
-	 */
-	public boolean isOcrSystemTesseract3_01() {
-		return TESSERACT_VERSION_3_01.equals(getOcrSystem());
-	}
-
-	/**
-	 * Validates if ocr system is version 3.02 of Tesseract
-	 * 
-	 * @return Result of validation 
-	 */
-	public boolean isOcrSystemTesseract3_02() {
-		return TESSERACT_VERSION_3_02.equals(getOcrSystem());
 	}
 }
