@@ -17,10 +17,10 @@
 
 package com.googlecode.jhocr.element;
 
+import com.googlecode.jhocr.attribute.BBox;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.googlecode.jhocr.attribute.BBox;
 
 /**
  * Class used to store information "ocr_carea" element and its children.
@@ -34,6 +34,7 @@ public class HocrCarea extends HocrElement {
 
 	private HocrPage			page;
 	private List<HocrParagraph>	paragraphs	= new ArrayList<HocrParagraph>();
+    private StringBuilder areaTextBuilder;
 
 	/**
 	 * Constructs an <code>HocrCarea</code> with a unique id and a coordinates <code>BBox</code>.
@@ -42,8 +43,9 @@ public class HocrCarea extends HocrElement {
 	 * @param bbox Sets the coordinates of element.
 	 */
 	public HocrCarea(String id, BBox bbox) {
-		super(id, bbox);
-	}
+        super(id, bbox);
+        this.areaTextBuilder = new StringBuilder();
+    }
 
 	/**
 	 * @return The children <code>HocrParagraph</code> of this.
@@ -68,7 +70,8 @@ public class HocrCarea extends HocrElement {
 	public void addParagraph(HocrParagraph paragraph) {
 		paragraph.setCarea(this);
 		getParagraphs().add(paragraph);
-	}
+        this.areaTextBuilder.append(paragraph.getText()).append(" ");
+    }
 
 	@Override
 	public String getClassName() {
@@ -80,8 +83,13 @@ public class HocrCarea extends HocrElement {
 		return TAGNAME;
 	}
 
-	/**
-	 * @return The parent <code>HocrPage</code> of this.
+    @Override
+    public String getText() {
+        return this.areaTextBuilder.toString();
+    }
+
+    /**
+     * @return The parent <code>HocrPage</code> of this.
 	 */
 	public HocrPage getPage() {
 		return page;

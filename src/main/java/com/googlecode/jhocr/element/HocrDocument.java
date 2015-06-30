@@ -54,8 +54,14 @@ public class HocrDocument {
 
 	private List<HocrPage>		pages					= new ArrayList<HocrPage>();
 
-	/** 
-	 * @return The content type of document
+    private StringBuilder documentTextBuilder;
+
+    public HocrDocument() {
+        documentTextBuilder = new StringBuilder();
+    }
+
+    /**
+     * @return The content type of document
 	 */
 	public String getContentType() {
 		return contentType;
@@ -108,8 +114,15 @@ public class HocrDocument {
 	 */
 	public void addPage(HocrPage page) {
 		page.setDocument(this);
-		getPages().add(page);
+        documentTextBuilder
+                .append(page.getText())
+                .append(" ");
+        getPages().add(page);
 	}
+
+    public String getText() {
+        return documentTextBuilder.toString();
+    }
 
 	/**
 	 * Returns the informations of this element as a <code>String</code>.

@@ -35,7 +35,8 @@ public class HocrPage extends HocrElement {
     private Integer pageNumber;
     private HocrDocument		document;
 	private String				image;
-	private List<HocrCarea>		careas		= new ArrayList<HocrCarea>();
+    private List<HocrCarea> careas = new ArrayList<>();
+    private StringBuilder pageTextBuilder;
 
 	/**
 	 * Constructs an <code>HocrPage</code> with a unique id and a coordinates <code>BBox</code>.
@@ -46,7 +47,8 @@ public class HocrPage extends HocrElement {
 	 */
 	public HocrPage(String id, BBox bbox, String image) {
 		super(id, bbox);
-		this.image = image;
+        pageTextBuilder = new StringBuilder();
+        this.image = image;
         this.pageNumber = Integer.parseInt(id.split("_")[1]);
     }
 
@@ -88,7 +90,8 @@ public class HocrPage extends HocrElement {
 	 */
 	public void addCarea(HocrCarea carea) {
 		carea.setPage(this);
-		getCareas().add(carea);
+        pageTextBuilder.append(carea.getText()).append(" ");
+        getCareas().add(carea);
 	}
 
 	@Override
@@ -101,8 +104,13 @@ public class HocrPage extends HocrElement {
 		return TAGNAME;
 	}
 
-	/**
-	 * @return The children <code>HocrParagraph</code> of this.
+    @Override
+    public String getText() {
+        return pageTextBuilder.toString();
+    }
+
+    /**
+     * @return The children <code>HocrParagraph</code> of this.
 	 */
 	public List<HocrParagraph> getParagraphs() {
 

@@ -82,6 +82,7 @@ abstract public class HocrElement {
 	 */
 	abstract public String getTagName();
 
+    abstract public String getText();
 
 	/**
 	 * Returns the informations of this element as a <code>String</code>.
