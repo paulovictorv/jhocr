@@ -17,10 +17,10 @@
 
 package com.googlecode.jhocr.element;
 
+import com.googlecode.jhocr.attribute.BBox;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.googlecode.jhocr.attribute.BBox;
 
 /**
  * Class used to store information "ocr_line" element and their children.
@@ -33,7 +33,9 @@ public class HocrLine extends HocrElement {
 	public static final String	CLASSNAME	= "ocr_line";
 
 	private HocrParagraph		paragraph;
-	private List<HocrWord>		words		= new ArrayList<HocrWord>();
+    private List<HocrWord> words = new ArrayList<>();
+
+    private StringBuilder lineTextBuilder;
 
 	/**
 	 * Constructs an <code>HocrLine</code> with a unique id and a coordinates <code>BBox</code>.
@@ -44,8 +46,9 @@ public class HocrLine extends HocrElement {
 	 *            Sets the coordinates of element.
 	 */
 	public HocrLine(String id, BBox bbox) {
-		super(id, bbox);
-	}
+        super(id, bbox);
+        this.lineTextBuilder = new StringBuilder();
+    }
 
 	@Override
 	public String getClassName() {
@@ -82,8 +85,9 @@ public class HocrLine extends HocrElement {
 	 */
 	public void addWord(HocrWord word) {
 		word.setLine(this);
-		getWords().add(word);
-	}
+        lineTextBuilder.append(word).append(" ");
+        getWords().add(word);
+    }
 
 	/**
 	 * @return the {@link #paragraph} object.
@@ -105,25 +109,8 @@ public class HocrLine extends HocrElement {
 	 * @return all words, concatenating children words with space.
 	 */
 	public String getText() {
-
-		StringBuilder text = new StringBuilder();
-
-		boolean first = true;
-
-		/**
-		 * Iterate all children words and build a <code>String</code> concatenating children words with space.
-		 */
-		for (HocrWord word : getWords()) {
-			if (first) {
-				text.append(word.getText());
-				first = false;
-			} else {
-				text.append(" ").append(word.getText());
-			}
-		}
-
-		return text.toString();
-	}
+        return lineTextBuilder.toString();
+    }
 
 	/**
 	 * 

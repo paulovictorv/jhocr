@@ -17,11 +17,11 @@
 
 package com.googlecode.jhocr.element;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.googlecode.jhocr.attribute.BBox;
 import com.googlecode.jhocr.attribute.ParagraphDirection;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class used to store information "ocr_paragraph" element and their children.<br>
@@ -35,7 +35,9 @@ public class HocrParagraph extends HocrElement {
 
 	private HocrCarea			carea;
 	private ParagraphDirection	direction	= ParagraphDirection.LTR;
-	private List<HocrLine>		lines		= new ArrayList<HocrLine>();
+    private List<HocrLine> lines = new ArrayList<>();
+
+    private StringBuilder paragraphTextBuilder;
 
 	/**
 	 * Constructs the {@link com.googlecode.jhocr.element.HocrParagraph} with a unique id and a coordinates {@link com.googlecode.jhocr.attribute.BBox}.
@@ -49,8 +51,9 @@ public class HocrParagraph extends HocrElement {
 	 */
 	public HocrParagraph(String id, BBox bbox, ParagraphDirection direction) {
 		super(id, bbox);
-		this.direction = direction;
-	}
+        this.paragraphTextBuilder = new StringBuilder();
+        this.direction = direction;
+    }
 
 	@Override
 	public String getClassName() {
@@ -62,9 +65,14 @@ public class HocrParagraph extends HocrElement {
 		return TAGNAME;
 	}
 
-	/**
-	 * @return a collection of {@link#lines}.
-	 */
+    @Override
+    public String getText() {
+        return paragraphTextBuilder.toString();
+    }
+
+    /**
+     * @return a collection of {@link#lines}.
+     */
 	public List<HocrLine> getLines() {
 		return lines;
 	}
@@ -86,9 +94,10 @@ public class HocrParagraph extends HocrElement {
 	 *            will be added to {@link#lines}.
 	 */
 	public void addLine(HocrLine line) {
-		line.setParagraph(this);
-		getLines().add(line);
-	}
+        line.setParagraph(this);
+        getLines().add(line);
+        this.paragraphTextBuilder.append(line.getText()).append(" ");
+    }
 
 	/**
 	 * @return the {@link #carea} object.
