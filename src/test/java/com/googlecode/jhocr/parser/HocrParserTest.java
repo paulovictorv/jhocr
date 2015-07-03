@@ -1,7 +1,6 @@
-package com.googlecode.jhocr;
+package com.googlecode.jhocr.parser;
 
 import com.googlecode.jhocr.element.HocrDocument;
-import com.googlecode.jhocr.parser.HocrParser;
 import org.junit.Test;
 
 import java.io.InputStream;

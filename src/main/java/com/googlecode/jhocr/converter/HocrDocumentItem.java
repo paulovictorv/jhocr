@@ -17,33 +17,27 @@
 
 package com.googlecode.jhocr.converter;
 
-import com.googlecode.jhocr.converter.exceptions.PageReadException;
 import com.googlecode.jhocr.element.HocrDocument;
 import com.googlecode.jhocr.parser.HocrParser;
 import com.googlecode.jhocr.util.LoggUtilException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * Contains the<br>
  * hocr file {@link com.googlecode.jhocr.converter.HocrDocumentItem#hocrInputStream} and <br>
- * the image {@link com.googlecode.jhocr.converter.HocrDocumentItem#imageInputStream}.
+ * the image {@link com.googlecode.jhocr.converter.HocrDocumentItem#imageProvider}.
  * 
  */
 public class HocrDocumentItem {
 
     private final static Logger logger = LoggerFactory.getLogger(new LoggUtilException().toString());
-    private ImageReader imageReader;
 
-    private ImageInputStream imageInputStream;
+    private ImagePageProvider imageProvider;
     private HocrDocument hocrDocument;
 
 
@@ -58,52 +52,41 @@ public class HocrDocumentItem {
 	public HocrDocumentItem(InputStream hocrInputStream, InputStream imageInputStream) {
         HocrParser hocrParser = new HocrParser(hocrInputStream);
         HocrDocument parse = hocrParser.parse();
-        init(parse, imageInputStream);
+        ImagePageProvider imagePageProvider = new ImagePageProvider(imageInputStream);
+        init(parse, imagePageProvider);
     }
 
     public HocrDocumentItem(String hocrSource, InputStream imageInputStream) {
         HocrParser hocrParser = new HocrParser(hocrSource);
         HocrDocument parse = hocrParser.parse();
-        init(parse, imageInputStream);
+        ImagePageProvider imagePageProvider = new ImagePageProvider(imageInputStream);
+        init(parse, imagePageProvider);
     }
 
     public HocrDocumentItem(HocrDocument hocrDocument, InputStream imgInputStream) {
-        init(hocrDocument, imgInputStream);
+        ImagePageProvider imagePageProvider = new ImagePageProvider(imgInputStream);
+        init(hocrDocument, imagePageProvider);
     }
 
-    private void init(HocrDocument document, InputStream imageInputStream) {
-        try {
-            this.hocrDocument = document;
-            this.imageInputStream = ImageIO.createImageInputStream(imageInputStream);
+    public HocrDocumentItem(HocrDocument hocrDocument, List<BufferedImage> pageImages) {
+        ImagePageProvider imagePageProvider = new ImagePageProvider(pageImages);
+        init(hocrDocument, imagePageProvider);
+    }
 
-            if (this.imageInputStream == null) {
-                throw new IOException();
-            }
+    public HocrDocumentItem(InputStream hocrSource, List<BufferedImage> bufferedImages) {
+        HocrParser hocrParser = new HocrParser(hocrSource);
+        HocrDocument parse = hocrParser.parse();
+        imageProvider = new ImagePageProvider(bufferedImages);
+        hocrDocument = parse;
+    }
 
-            Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(this.imageInputStream);
-
-            if (imageReaders != null && !imageReaders.hasNext()) {
-                //TODO see if we can extract the intended format
-                throw new IOException("Format not supported.");
-            }
-
-            imageReader = imageReaders.next();
-            imageReader.setInput(this.imageInputStream);
-            logger.info("Using image reader {}", imageReader.getClass().getSimpleName());
-
-
-        } catch (IOException e) {
-            logger.error("Error while creating image input stream", e);
-        }
+    private void init(HocrDocument document, ImagePageProvider provider) {
+        this.hocrDocument = document;
+        this.imageProvider = provider;
     }
 
     public BufferedImage getImageForPage(Integer pageNumber) {
-        try {
-            return imageReader.read(pageNumber - 1);
-        } catch (IOException | IndexOutOfBoundsException e) {
-            logger.error("Error while reading the image page: ", e);
-            throw new PageReadException(e);
-        }
+        return imageProvider.getPage(pageNumber - 1);
     }
 
     public HocrDocument getHocrDocument() {

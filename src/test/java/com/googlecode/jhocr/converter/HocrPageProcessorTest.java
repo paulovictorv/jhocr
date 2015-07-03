@@ -1,6 +1,5 @@
-package com.googlecode.jhocr;
+package com.googlecode.jhocr.converter;
 
-import com.googlecode.jhocr.converter.HocrPageProcessor;
 import com.googlecode.jhocr.element.HocrDocument;
 import com.googlecode.jhocr.element.HocrPage;
 import com.googlecode.jhocr.parser.HocrParser;

@@ -1,6 +1,5 @@
-package com.googlecode.jhocr;
+package com.googlecode.jhocr.converter;
 
-import com.googlecode.jhocr.converter.HocrToPdf;
 import com.googlecode.jhocr.util.JHOCRUtil;
 import com.googlecode.jhocr.util.ResourceLoader;
 import org.junit.Test;
